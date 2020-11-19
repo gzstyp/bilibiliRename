@@ -90,6 +90,12 @@ public class Launch{
               final String fileName = file_dir + separator + sub;
               new File(name).renameTo(new File(fileName));
             }
+            final String greater100 = file_name.substring(3,4);
+            if(greater100.equals(".")){
+              final String sub = file_name.substring(4);
+              final String fileName = file_dir + separator + sub;
+              new File(name).renameTo(new File(fileName));
+            }
           } catch (Exception e){
             return false;
           }
