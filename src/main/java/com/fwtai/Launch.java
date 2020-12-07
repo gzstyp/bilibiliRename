@@ -15,8 +15,23 @@ public class Launch{
       System.out.println(path);
       replace(path);
       if(args.length > 1){
-        final String exist = args[1];
-        delPrefix(path);
+        final int type = Integer.parseInt(args[1]);
+        switch (type){
+            case 1:// "F:\bilibili\xxx" 1
+              delPrefix(path);
+              break;
+            case 2:// "F:\bilibili\xxx" 2 "4-"
+              if(args.length > 2){
+                final String expression = args[2];
+                if(expression != null && expression.length() >0)
+                  delExpression(path,expression);
+              }
+              break;
+            case 3:
+              break;
+            default:
+              break;
+        }
       }
     }
   }
@@ -66,7 +81,7 @@ public class Launch{
     }
   }
 
-  protected static boolean delPrefix(final String pathDir){
+  private static boolean delPrefix(final String pathDir){
     final File dir = new File(pathDir);
     try {
       if(dir.isDirectory()){
@@ -96,6 +111,33 @@ public class Launch{
               final String fileName = file_dir + separator + sub;
               new File(name).renameTo(new File(fileName));
             }
+          } catch (Exception e){
+            return false;
+          }
+        }
+      }
+      return true;
+    } catch (Exception e){
+      return false;
+    }
+  }
+
+  private static boolean delExpression(final String pathDir,final String expression){
+    final File dir = new File(pathDir);
+    try {
+      if(dir.isDirectory()){
+        final File[] childFiles = dir.listFiles();
+        for(int i = 0; i < childFiles.length; i++){
+          final String name = childFiles[i].getPath();
+          final String separator = File.separator;
+          final int last = name.lastIndexOf(separator);
+          final String file_name = name.substring(last + 1);
+          final String file_dir = name.substring(0,last);
+          try {
+            final int length = expression.length();
+            final String sub = file_name.substring(length);
+            final String fileName = file_dir + separator + sub;
+            new File(name).renameTo(new File(fileName));
           } catch (Exception e){
             return false;
           }
