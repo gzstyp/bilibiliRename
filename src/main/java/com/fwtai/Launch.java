@@ -5,6 +5,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
 
+/**
+ * 需要输入有3个参数;第1个是文件夹路径;第2个为:1或2;1表示需要删除前缀;当为2时是第2次执行;一般前执行要1步骤是再执行第2个参数问2的情况;2表示要删除指定的字符串,也就是第3个参数
+ * 示例:
+ * "F:\bilibili\下载的目录" 1
+ * "F:\bilibili\下载的目录" 2 "替换的字符串"
+ * @作者 田应平
+ * @版本 v1.0
+ * @创建时间 2020/12/7 15:22
+ * @QQ号码 444141300
+ * @Email service@yinlz.com
+ * @官网 <url>http://www.yinlz.com</url>
+*/
 @SpringBootApplication
 public class Launch{
 
