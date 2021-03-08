@@ -28,8 +28,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <!-- 此版本不能变,否则jsp页面报404 -->
-                <version>1.4.2.RELEASE</version>
                 <executions>
                     <execution>
                         <goals>
