@@ -18,10 +18,10 @@ import java.io.File;
  * @官网 <url>http://www.yinlz.com</url>
 */
 @SpringBootApplication
-public class Launch{
+public class Launcher{
 
   public static void main(final String[] args){
-    SpringApplication.run(Launch.class,args);
+    SpringApplication.run(Launcher.class,args);
     if(args.length > 0){
       final String path = args[0];
       System.out.println(path);
