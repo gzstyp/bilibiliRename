@@ -4,6 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * 需要输入有3个参数;第1个是文件夹路径;第2个为:1或2;1表示需要删除前缀;当为2时是第2次执行;一般前执行要1步骤是再执行第2个参数问2的情况;2表示要删除指定的字符串,也就是第3个参数
@@ -47,37 +50,21 @@ public class Launcher{
     }
   }
 
-  protected static void dirRename(final String pathDir,final String expression,final String target){
-    final File dir = new File(pathDir);
-    if (expression == null) {
-      return;
-    }
-    if(dir.isDirectory()){
-      final File[] childFiles = dir.listFiles();
-      for(int i = 0; i < childFiles.length; i++){
-        try {
-          final String name = childFiles[i].getPath();
-          final String fileName = name.replaceAll(expression,(target==null ? "" : target));
-          new File(name).renameTo(new File(fileName));
-        } catch (final Exception e){}
-      }
-    }
-  }
-
   protected static void replace(final String pathDir){
     final File dir = new File(pathDir);
     if(dir.isDirectory()){
       final File[] childFiles = dir.listFiles();
       for(int i = 0; i < childFiles.length; i++){
         final String name = childFiles[i].getPath();
-        int prefix = name.lastIndexOf("(A");
-        int suffix = name.lastIndexOf(").")+1;
+        final int prefix = name.lastIndexOf("(A");
+        final int suffix = name.lastIndexOf(").")+1;
         try {
           final String expression = name.substring(prefix,suffix);
-          final String fileName = name.replaceAll(expression,"").replaceAll("\\(","").replaceAll("\\)","");
-          new File(name).renameTo(new File(fileName));
-          dirRename(pathDir,"\\(\\)","");
-        } catch (final Exception e){}
+          final String fileName = name.replaceAll(expression,"").replaceAll("\\(\\)","");
+          final Path sourcePath = FileSystems.getDefault().getPath(name);
+          final Path targetPath = FileSystems.getDefault().getPath(fileName);
+          Files.move(sourcePath,targetPath);
+        } catch (final Exception ignored){}
       }
     }
   }
@@ -111,7 +98,7 @@ public class Launcher{
             final String fileName = file_dir + separator + sub;
             new File(name).renameTo(new File(fileName));
           }
-        } catch (final Exception e){}
+        } catch (final Exception ignored){}
       }
     }
   }
@@ -133,7 +120,7 @@ public class Launcher{
           final String file = file_name.replaceAll(sub,"");
           final String fileName = file_dir + separator + file;
           new File(name).renameTo(new File(fileName));
-        } catch (final Exception e){}
+        } catch (final Exception ignored){}
       }
     }
   }
