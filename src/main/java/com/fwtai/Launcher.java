@@ -53,25 +53,29 @@ public class Launcher{
   protected static void replace(final String pathDir){
     final File dir = new File(pathDir);
     if(dir.isDirectory()){
-      final File[] childFiles = dir.listFiles();
-      for(int i = 0; i < childFiles.length; i++){
-        final String name = childFiles[i].getPath();
-        final int prefix = name.lastIndexOf("(A");
-        final int suffix = name.lastIndexOf(").")+1;
-        try {
-          final String expression = name.substring(prefix,suffix);
-          String fileName = name.replaceAll(expression,"").replaceAll("\\(\\)","");
-          final Path sourcePath = FileSystems.getDefault().getPath(pathDir+"\\"+name);
-          final String numberPrefix = fileName.substring(0,2);
-          if(numberPrefix.endsWith(".")){
-            final int number = Integer.parseInt(numberPrefix.substring(0,1));
-            if(number <10){
-              fileName = "0"+fileName;
+      final File[] array = dir.listFiles();
+      for(int i = array.length - 1; i >= 0; i--){
+        final File file = array[i];
+        final boolean b = file.isFile();
+        if(b){
+          final String name = file.getName();
+          final int prefix = name.lastIndexOf("(A");
+          final int suffix = name.lastIndexOf(").")+1;
+          try {
+            final String expression = name.substring(prefix,suffix);
+            String fileName = name.replaceAll(expression,"").replaceAll("\\(\\)","");
+            final Path sourcePath = FileSystems.getDefault().getPath(pathDir+"/"+name);
+            final String numberPrefix = fileName.substring(0,2);
+            if(numberPrefix.endsWith(".")){
+              final int number = Integer.parseInt(numberPrefix.substring(0,1));
+              if(number <10){
+                fileName = "0"+fileName;
+              }
             }
-          }
-          final Path targetPath = FileSystems.getDefault().getPath(pathDir+"\\"+fileName);
-          Files.move(sourcePath,targetPath);
-        } catch (final Exception ignored){}
+            final Path targetPath = FileSystems.getDefault().getPath(pathDir+"/"+fileName);
+            Files.move(sourcePath,targetPath);
+          } catch (final Exception ignored){}
+        }
       }
     }
   }
