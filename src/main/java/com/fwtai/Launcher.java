@@ -60,9 +60,16 @@ public class Launcher{
         final int suffix = name.lastIndexOf(").")+1;
         try {
           final String expression = name.substring(prefix,suffix);
-          final String fileName = name.replaceAll(expression,"").replaceAll("\\(\\)","");
-          final Path sourcePath = FileSystems.getDefault().getPath(name);
-          final Path targetPath = FileSystems.getDefault().getPath(fileName);
+          String fileName = name.replaceAll(expression,"").replaceAll("\\(\\)","");
+          final Path sourcePath = FileSystems.getDefault().getPath(pathDir+"\\"+name);
+          final String numberPrefix = fileName.substring(0,2);
+          if(numberPrefix.endsWith(".")){
+            final int number = Integer.parseInt(numberPrefix.substring(0,1));
+            if(number <10){
+              fileName = "0"+fileName;
+            }
+          }
+          final Path targetPath = FileSystems.getDefault().getPath(pathDir+"\\"+fileName);
           Files.move(sourcePath,targetPath);
         } catch (final Exception ignored){}
       }
