@@ -33,18 +33,18 @@ public class Launcher{
       if(args.length > 1){
         final int type = Integer.parseInt(args[1]);
         switch (type){
-            case 1:// "F:\bilibili\xxx" 1
-              delPrefix(path);
-              break;
-            case 2:// "F:\bilibili\xxx" 2 "4-";
-              if(args.length > 2){
-                final String expression = args[2];
-                if(expression != null && expression.length() >0)
-                  delExpression(path,expression);
-              }
-              break;
-            default:
-              break;
+          case 1:// "F:\bilibili\xxx" 1
+            delPrefix(path);
+            break;
+          case 2:// "F:\bilibili\xxx" 2 "4-";
+            if(args.length > 2){
+              final String expression = args[2];
+              if(expression != null && expression.length() >0)
+                delExpression(path,expression);
+            }
+            break;
+          default:
+            break;
         }
       }
     }
