@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,7 +30,7 @@ public class Launcher{
     if(args.length > 0){
       final String path = args[0];
       System.out.println(path);
-      replace(path);
+      replace(path,null);
       if(args.length > 1){
         final int type = Integer.parseInt(args[1]);
         switch (type){
@@ -43,6 +44,12 @@ public class Launcher{
                 delExpression(path,expression);
             }
             break;
+          case 3:// "F:\bilibili\xxx" 3 "-";
+            if(args.length > 2){
+              final String regex = args[2];
+              replace(path,regex);
+            }
+            break;
           default:
             break;
         }
@@ -50,7 +57,7 @@ public class Launcher{
     }
   }
 
-  protected static void replace(final String pathDir){
+  protected static void replace(final String pathDir,final String regex){
     final File dir = new File(pathDir);
     if(dir.isDirectory()){
       final File[] array = dir.listFiles();
@@ -58,26 +65,35 @@ public class Launcher{
         final File file = array[i];
         final boolean b = file.isFile();
         if(b){
-          final String name = file.getName();
-          final int prefix = name.lastIndexOf("(A");
-          final int suffix = name.lastIndexOf(").")+1;
+          final String originalName = file.getName();
+          final int prefix = originalName.lastIndexOf("(A");
+          final int suffix = originalName.lastIndexOf(").")+1;
           try {
-            final String expression = name.substring(prefix,suffix);
-            String fileName = name.replaceAll(expression,"").replaceAll("\\(\\)","");
-            final Path sourcePath = FileSystems.getDefault().getPath(pathDir+"/"+name);
-            final String numberPrefix = fileName.substring(0,2);
-            if(numberPrefix.endsWith(".")){
-              final int number = Integer.parseInt(numberPrefix.substring(0,1));
-              if(number <10){
-                fileName = "0"+fileName;
-              }
+            if(prefix == -1 && suffix == 0){
+              final String fileName = file.getName();
+              rename(pathDir,regex,originalName,fileName);
+              continue;
             }
-            final Path targetPath = FileSystems.getDefault().getPath(pathDir+"/"+fileName);
-            Files.move(sourcePath,targetPath);
+            final String expression = originalName.substring(prefix,suffix);
+            final String fileName = originalName.replaceAll(expression,"").replaceAll("\\(\\)","");//替换()
+            rename(pathDir,regex,originalName,fileName);
           } catch (final Exception ignored){}
         }
       }
     }
+  }
+
+  private static void rename(final String pathDir,final String regex,final String originalName,String fileName) throws IOException{
+    final String numberPrefix = fileName.substring(0,2);
+    if(numberPrefix.endsWith(regex == null ? "." : regex)){
+      final int number = Integer.parseInt(numberPrefix.substring(0,1));
+      if(number <10){
+        fileName = "0"+fileName;
+      }
+    }
+    final Path sourcePath = FileSystems.getDefault().getPath(pathDir+"/"+originalName);
+    final Path targetPath = FileSystems.getDefault().getPath(pathDir+"/"+fileName);
+    Files.move(sourcePath,targetPath);
   }
 
   private static void delPrefix(final String pathDir){
